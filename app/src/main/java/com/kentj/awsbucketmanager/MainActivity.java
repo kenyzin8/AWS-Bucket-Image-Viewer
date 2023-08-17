@@ -37,10 +37,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 1;
     private static final boolean DEBUG = false;
-    private static final String BUCKETEER_AWS_ACCESS_KEY_ID = "AKIARVGPJVYVEJU4FSSU";
-    private static final String BUCKETEER_AWS_REGION = "us-east-1";
-    private static final String BUCKETEER_AWS_SECRET_ACCESS_KEY = "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";
-    private static final String BUCKETEER_BUCKET_NAME = "bucketeer-1cd7eaa1-ee64-46a7-a601-ee1d375f489c";
+    private static final String BUCKETEER_AWS_ACCESS_KEY_ID = "";
+    private static final String BUCKETEER_AWS_REGION = "";
+    private static final String BUCKETEER_AWS_SECRET_ACCESS_KEY = "";
+    private static final String BUCKETEER_BUCKET_NAME = "";
 
     private EditText accessKeyID, region, secretAccessKey, bucketName;
     private Button connectBucket, clearFields, loadSavedIAM;
