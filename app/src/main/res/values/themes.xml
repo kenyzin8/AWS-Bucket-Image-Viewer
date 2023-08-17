@@ -1,0 +1,31 @@
+<resources
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.AWSBucketManager" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">#121212</item>
+        <item name="colorSecondary">@color/white</item>
+    </style>
+
+    <style name="Theme.AWSBucketManager" parent="Base.Theme.AWSBucketManager" />
+
+    <style name="WhiteFocusedTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorAccent">@color/white</item>
+        <item name="boxStrokeColor">@color/white</item>
+    </style>
+
+    <style name="whitePrimary" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorSecondary">@color/black</item>
+    </style>
+
+    <style name="buttonTheme" parent="ShapeAppearanceOverlay.Material3.Button">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">#232323</item>
+        <item name="colorSecondary">@color/black</item>
+        <item name="colorControlHighlight">#121212</item>
+        <item name="colorOnSurface">#000000</item>
+    </style>
+
+</resources>
