@@ -6,38 +6,48 @@
     android:layout_height="match_parent"
     android:background="#121212">
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/viewImageAdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-8165483016093949/5632549095"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFileName" />
+
     <TextView
         android:id="@+id/tvFileName"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
         android:text="file-name"
+        android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnDelete"
+        app:layout_constraintStart_toEndOf="@+id/btnBackFullScreen"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
+        android:background="#121212"
         android:elevation="0dp"
-        app:cardElevation="0dp"
         app:cardCornerRadius="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvFileName"
-        android:background="#121212">
+        app:layout_constraintTop_toBottomOf="@+id/viewImageAdView">
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/imageViewPager"
             android:layout_width="match_parent"
@@ -45,7 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFileName"/>
+            app:layout_constraintTop_toBottomOf="@+id/tvFileName" />
     </androidx.cardview.widget.CardView>
 
 
@@ -53,20 +63,36 @@
         android:id="@+id/btnBackFullScreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="24dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFileName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFileName"
         app:srcCompat="@drawable/ic_back" />
 
     <ImageView
         android:id="@+id/btnDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="24dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFileName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFileName"
         app:srcCompat="@drawable/ic_delete" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Long press image to save"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

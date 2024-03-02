@@ -5,6 +5,7 @@
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">#121212</item>
         <item name="colorSecondary">@color/white</item>
+        <item name="android:navigationBarColor">#121212</item>
     </style>
 
     <style name="Theme.AWSBucketManager" parent="Base.Theme.AWSBucketManager" />

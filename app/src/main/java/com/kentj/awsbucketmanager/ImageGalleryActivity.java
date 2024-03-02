@@ -1,10 +1,14 @@
 package com.kentj.awsbucketmanager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -29,6 +33,10 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,12 +50,12 @@ public class ImageGalleryActivity extends AppCompatActivity {
     private String BUCKETEER_AWS_SECRET_ACCESS_KEY = "";
     private String BUCKETEER_BUCKET_NAME = "";
     private AmazonS3 s3Client;
-
     private RecyclerView imageRecyclerView;
     private ImageAdapter imageAdapter;
     private ArrayList<String> imageUrls = new ArrayList<>();
     ImageView btnBack;
     public static ImageView btnRefresh;
+    private AdView loggedAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +76,41 @@ public class ImageGalleryActivity extends AppCompatActivity {
 
         btnBack = findViewById(R.id.btnBack);
         btnRefresh = findViewById(R.id.btnRefresh);
+        loggedAdView = findViewById(R.id.loggedAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        loggedAdView.loadAd(adRequest);
+        loggedAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+        });
+
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override

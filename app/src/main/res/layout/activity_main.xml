@@ -29,9 +29,9 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-black"
         android:text="© Kent J."
-        android:textColor="#989898"
+        android:textColor="#FFFFFF"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,67 +62,69 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutRegion"
+        style="@style/WhiteFocusedTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutKeyID"
-        style="@style/WhiteFocusedTextInputLayout"
-        app:hintTextColor="@color/white">
+        app:layout_constraintTop_toBottomOf="@+id/layoutKeyID">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editRegion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Region"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutSecretAccessKey"
+        style="@style/WhiteFocusedTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutRegion"
-        style="@style/WhiteFocusedTextInputLayout"
-        app:hintTextColor="@color/white">
+        app:layout_constraintTop_toBottomOf="@+id/layoutRegion">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editSecretAccessKey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Secret Access Key"
-            android:textColor="@color/white"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutBucketName"
+        style="@style/WhiteFocusedTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutSecretAccessKey"
-        style="@style/WhiteFocusedTextInputLayout"
-        app:hintTextColor="@color/white">
+        app:layout_constraintTop_toBottomOf="@+id/layoutSecretAccessKey">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editBucketName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Bucket Name"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -163,32 +165,42 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clearIAM"
-        android:visibility="invisible"/>
+        android:visibility="gone"/>
 
     <CheckBox
         android:id="@+id/saveData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Save IAM credentials "
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutBucketName"
+        android:layout_marginTop="8dp"
         android:buttonTint="@color/checkbox_colors"
+        android:text="Save IAM credentials "
         android:textColor="@color/white"
         android:theme="@style/whitePrimary"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutBucketName" />
 
     <TextView
         android:id="@+id/tvConnecting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Connecting, please wait..."
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintBottom_toTopOf="@+id/loginAdView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loadSavedIAM" />
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/loginAdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-8165483016093949/6373224626"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

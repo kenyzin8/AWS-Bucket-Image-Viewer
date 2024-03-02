@@ -1,5 +1,6 @@
 package com.kentj.awsbucketmanager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,9 +31,15 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 1;
@@ -41,15 +48,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String BUCKETEER_AWS_REGION = "";
     private static final String BUCKETEER_AWS_SECRET_ACCESS_KEY = "";
     private static final String BUCKETEER_BUCKET_NAME = "";
-
     private EditText accessKeyID, region, secretAccessKey, bucketName;
     private Button connectBucket, clearFields, loadSavedIAM;
     private CheckBox saveData;
     private TextView tvConnecting;
-
     private Handler connectingHandler = new Handler();
     private int dotCount = 0;
-
+    private AdView loginAdView;
     private Runnable connectingRunnable = new Runnable() {
         @Override
         public void run() {
@@ -83,10 +88,44 @@ public class MainActivity extends AppCompatActivity {
 
         tvConnecting = findViewById(R.id.tvConnecting);
 
+        loginAdView = findViewById(R.id.loginAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        loginAdView.loadAd(adRequest);
+        loginAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+        });
+
         tvConnecting.setVisibility(View.INVISIBLE);
 
-        if(DEBUG)
-        {
+        if(DEBUG) {
             accessKeyID.setText(BUCKETEER_AWS_ACCESS_KEY_ID);
             region.setText(BUCKETEER_AWS_REGION);
             secretAccessKey.setText(BUCKETEER_AWS_SECRET_ACCESS_KEY);
@@ -113,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 String bucket = bucketName.getText().toString().trim();
 
                 if (keyId.isEmpty() && reg.isEmpty() && secretKey.isEmpty() && bucket.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please fill out all fields!", Toast.LENGTH_SHORT).show();
+                    Toasty.error(MainActivity.this, "Please fill out all fields!", Toast.LENGTH_SHORT, true).show();
+
                     return;
                 }
 
@@ -232,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean isConnected) {
             if (isConnected) {
-                Toast.makeText(MainActivity.this, "Connected to the bucket successfully!", Toast.LENGTH_SHORT).show();
+                Toasty.success(MainActivity.this, "Connected to the bucket successfully!", Toast.LENGTH_SHORT, true).show();
                 tvConnecting.setVisibility(View.INVISIBLE);
                 connectingHandler.removeCallbacks(connectingRunnable);
 
@@ -255,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 },5000);
             } else {
-                Toast.makeText(MainActivity.this, "Failed to connect to the bucket!", Toast.LENGTH_SHORT).show();
+                Toasty.error(MainActivity.this, "Failed to connect to the bucket!", Toast.LENGTH_SHORT, true).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

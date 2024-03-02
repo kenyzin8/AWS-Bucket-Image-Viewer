@@ -36,13 +36,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.ViewHolder> {
     private List<String> imageUrls;
     private Context context;
+    private PermissionRequestListener permissionRequestListener;
 
-    public ImagePagerAdapter(Context context, List<String> imageUrls) {
+    public ImagePagerAdapter(Context context, List<String> imageUrls, PermissionRequestListener listener) {
         this.context = context;
         this.imageUrls = imageUrls;
+        this.permissionRequestListener = listener;
     }
 
     @NonNull
@@ -90,10 +94,20 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Vi
                 yesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        saveImage(imageUrl, extractFileNameFromPresignedUrl(imageUrl));
+                        if (permissionRequestListener != null) {
+                            permissionRequestListener.onRequestPermission(imageUrl);
+                        }
                         dialog.dismiss();
                     }
                 });
+
+//                yesButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        saveImage(imageUrl, extractFileNameFromPresignedUrl(imageUrl));
+//                        dialog.dismiss();
+//                    }
+//                });
 
                 noButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -106,68 +120,6 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Vi
                 return true;
             }
         });
-    }
-
-    private void saveImage(String imageUrl, String fileName) {
-        Glide.with(context)
-                .asBitmap()
-                .load(imageUrl)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        saveBitmapToGallery(resource, fileName);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                    }
-                });
-    }
-
-    private void saveBitmapToGallery(Bitmap bitmap, String fileName) {
-        String savedImagePath = null;
-        if (fileName.lastIndexOf(".") > 0) {
-            fileName = fileName.substring(0, fileName.lastIndexOf("."));
-        }
-        String imageFileName = fileName + ".jpg";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/AWSBucketManager/");
-        boolean success = true;
-        if (!storageDir.exists()) {
-            success = storageDir.mkdirs();
-        }
-        if (success) {
-            File imageFile = new File(storageDir, imageFileName);
-            savedImagePath = imageFile.getAbsolutePath();
-            try {
-                OutputStream fOut = new FileOutputStream(imageFile);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-                fOut.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            galleryAddPic(savedImagePath);
-            Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void galleryAddPic(String imagePath) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(imagePath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        context.sendBroadcast(mediaScanIntent);
-    }
-
-    private String extractFileNameFromPresignedUrl(String url) {
-        try {
-            URI uri = new URI(url);
-            String path = uri.getPath();
-            return path.substring(path.lastIndexOf('/') + 1);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return "";
-        }
     }
 
     @Override

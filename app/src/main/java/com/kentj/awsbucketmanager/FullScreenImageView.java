@@ -17,6 +17,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -41,6 +42,10 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,8 +56,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class FullScreenImageView extends AppCompatActivity {
+import es.dmoral.toasty.Toasty;
 
+interface PermissionRequestListener {
+    void onRequestPermission(String imageUrl);
+}
+
+public class FullScreenImageView extends AppCompatActivity implements PermissionRequestListener {
+    private static final int REQUEST_EXTERNAL_STORAGE_PERMISSION = 1;
     private ImageView btnBackFullScreen, btnDelete;
     private TextView fileName;
     private String imageUrl;
@@ -65,6 +76,7 @@ public class FullScreenImageView extends AppCompatActivity {
     private String BUCKETEER_BUCKET_NAME = "";
     private String currentFile = "";
     private int currentFileIndex = -1;
+    private AdView viewImageAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +98,48 @@ public class FullScreenImageView extends AppCompatActivity {
         currentFileIndex = position;
 
         ViewPager2 viewPager2 = findViewById(R.id.imageViewPager);
-        ImagePagerAdapter adapter = new ImagePagerAdapter(this, imageUrls);
+        ImagePagerAdapter adapter = new ImagePagerAdapter(this, imageUrls, this);
         viewPager2.setAdapter(adapter);
         viewPager2.setCurrentItem(position, false);
 
         btnBackFullScreen = findViewById(R.id.btnBackFullScreen);
         fileName = findViewById(R.id.tvFileName);
         fileName.setText(imageFileName);
+
+        viewImageAdView = findViewById(R.id.viewImageAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        viewImageAdView.loadAd(adRequest);
+        viewImageAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+        });
 
         btnDelete = findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +193,99 @@ public class FullScreenImageView extends AppCompatActivity {
                 FullScreenImageView.super.onBackPressed();
             }
         });
+    }
+
+    @Override
+    public void onRequestPermission(String imageUrl) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_EXTERNAL_STORAGE_PERMISSION);
+            } else {
+                saveImage(imageUrl, extractFileNameFromPresignedUrl(imageUrl));
+            }
+        } else {
+            saveImage(imageUrl, extractFileNameFromPresignedUrl(imageUrl));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_EXTERNAL_STORAGE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                saveImage(imageUrl, extractFileNameFromPresignedUrl(imageUrl));
+            } else {
+                Toasty.error(this, "This app does not have permission to write to storage. Please go to Settings > Apps > AWS Bucket Image Viewer > Permissions, and enable Storage.", Toast.LENGTH_LONG, true).show();
+            }
+        }
+    }
+
+    private void saveImage(String imageUrl, String fileName) {
+        Glide.with(this)
+                .asBitmap()
+                .load(imageUrl)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        saveBitmapToGallery(resource, fileName);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
+    }
+
+    private void saveBitmapToGallery(Bitmap bitmap, String fileName) {
+        String savedImagePath = null;
+        if (fileName.lastIndexOf(".") > 0) {
+            fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+        String imageFileName = fileName + ".jpg";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/AWSBucketManager/");
+        boolean success = true;
+        if (!storageDir.exists()) {
+            success = storageDir.mkdirs();
+        }
+        if (success) {
+            File imageFile = new File(storageDir, imageFileName);
+            savedImagePath = imageFile.getAbsolutePath();
+            try {
+                OutputStream fOut = new FileOutputStream(imageFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            galleryAddPic(savedImagePath);
+            Toasty.success(this, "Image Saved!", Toast.LENGTH_SHORT, true).show();
+        }
+        else{
+            Toasty.error(this, "Failed to save image.", Toast.LENGTH_SHORT, true).show();
+        }
+    }
+
+    private void galleryAddPic(String imagePath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(imagePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+
+    private String extractFileNameFromPresignedUrl(String url) {
+        try {
+            URI uri = new URI(url);
+            String path = uri.getPath();
+            return path.substring(path.lastIndexOf('/') + 1);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     private class DeleteObjectTask extends AsyncTask<String, Void, Void> {
